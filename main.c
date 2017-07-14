@@ -54,7 +54,9 @@ void show_data(u_char *args, const struct pcap_pkthdr *header, const u_char *pac
     }
 
     tcp_Container = *(TCP_HEADER*)(packet+SIZE_ETHER_HEADER+size_ipheader);
-    size_tcpheader = (tcp_Container.data_Offset >> 4) * 4;
+    size_tcpheader = ((tcp_Container.data_Offset >> 4) & 0x0f) * 4;
+    //printf("size of tcp header: %d\n", size_tcpheader);
+    //printf("length of packet: %d\n",header->len);
     if(size_tcpheader < 20)
     {
         printf("invalid TCP Header Length: %u bytes\n",size_tcpheader);
@@ -62,16 +64,23 @@ void show_data(u_char *args, const struct pcap_pkthdr *header, const u_char *pac
     }
     data = (u_char*)(packet+SIZE_ETHER_HEADER+size_ipheader+size_tcpheader);
 
-    printf("eth.smac: %x:%x:%x:%x:%x:%x\t",
+    printf("eth.smac: %x:%x:%x:%x:%x:%x\n",
            ether_Container.src_mac[0],ether_Container.src_mac[1],ether_Container.src_mac[2],ether_Container.src_mac[3],ether_Container.src_mac[4],ether_Container.src_mac[5]);
     printf("eth.dmac: %x:%x:%x:%x:%x:%x\n",
            ether_Container.dst_mac[0],ether_Container.dst_mac[1],ether_Container.dst_mac[2],ether_Container.dst_mac[3],ether_Container.dst_mac[4],ether_Container.dst_mac[5]);
 
-    printf("ip.sip: %s\t\t\t", inet_ntoa(ip_Container.src_ip));
+    printf("ip.sip: %s\n", inet_ntoa(ip_Container.src_ip));
     printf("ip.dip: %s\n", inet_ntoa(ip_Container.dst_ip));
 
-    printf("tcp.sport: %hu\t\t", ntohs(tcp_Container.src_port));
+    printf("tcp.sport: %hu\n", ntohs(tcp_Container.src_port));
     printf("tcp.dport: %hu\n", ntohs(tcp_Container.dst_port));
+
+    if((SIZE_ETHER_HEADER + size_ipheader + size_tcpheader)==header->len)
+        printf("NO PAYLOAD\n");
+    else
+    {
+        printf("%x %x %x %x %x....\n", data[0], data[1], data[2], data[3], data[4]);
+    }
 }
 
 int main(int argc, char * argv[])
@@ -119,7 +128,7 @@ int main(int argc, char * argv[])
         return 2;
     }
 
-    pcap_loop(handle, 5, show_data, NULL);
+    pcap_loop(handle, 10, show_data, NULL);
     //packet = pcap_next(handle, &header);
     //printf("Jacked a packet with length of [%d]\n", header.len);
     pcap_close(handle);
