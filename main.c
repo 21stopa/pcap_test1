@@ -64,9 +64,9 @@ void show_data(u_char *args, const struct pcap_pkthdr *header, const u_char *pac
     }
     data = (u_char*)(packet+SIZE_ETHER_HEADER+size_ipheader+size_tcpheader);
 
-    printf("eth.smac: %x:%x:%x:%x:%x:%x\n",
+    printf("eth.smac: %02x:%02x:%02x:%02x:%02x:%02x\n",
            ether_Container.src_mac[0],ether_Container.src_mac[1],ether_Container.src_mac[2],ether_Container.src_mac[3],ether_Container.src_mac[4],ether_Container.src_mac[5]);
-    printf("eth.dmac: %x:%x:%x:%x:%x:%x\n",
+    printf("eth.dmac: %02x:%02x:%02x:%02x:%02x:%02x\n",
            ether_Container.dst_mac[0],ether_Container.dst_mac[1],ether_Container.dst_mac[2],ether_Container.dst_mac[3],ether_Container.dst_mac[4],ether_Container.dst_mac[5]);
 
     printf("ip.sip: %s\n", inet_ntoa(ip_Container.src_ip));
@@ -79,7 +79,7 @@ void show_data(u_char *args, const struct pcap_pkthdr *header, const u_char *pac
         printf("NO PAYLOAD\n");
     else
     {
-        printf("%x %x %x %x %x....\n", data[0], data[1], data[2], data[3], data[4]);
+        printf("%02x %02x %02x %02x %02x....\n", data[0], data[1], data[2], data[3], data[4]);
     }
 }
 
