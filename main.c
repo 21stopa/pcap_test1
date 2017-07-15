@@ -47,7 +47,7 @@ void show_data(u_char *args, const struct pcap_pkthdr *header, const u_char *pac
 
     ip_Container = *(IP_HEADER*)(packet+SIZE_ETHER_HEADER);
     size_ipheader = (ip_Container.version_Hlength & 0x0f) * 4;
-    if(size_ipheader < 20)
+    if(size_ipheader < 20) // By default, the length of IP header is 20. If it's less than 20, the packet might be malformed.
     {
         printf("invalid IP Header Length: %u bytes\n", size_ipheader);
         return ;
@@ -57,7 +57,7 @@ void show_data(u_char *args, const struct pcap_pkthdr *header, const u_char *pac
     size_tcpheader = ((tcp_Container.data_Offset >> 4) & 0x0f) * 4;
     //printf("size of tcp header: %d\n", size_tcpheader);
     //printf("length of packet: %d\n",header->len);
-    if(size_tcpheader < 20)
+    if(size_tcpheader < 20) // By default, the length of TCP header is 20
     {
         printf("invalid TCP Header Length: %u bytes\n",size_tcpheader);
         return ;
@@ -79,7 +79,7 @@ void show_data(u_char *args, const struct pcap_pkthdr *header, const u_char *pac
         printf("NO PAYLOAD\n");
     else
     {
-        printf("%02x %02x %02x %02x %02x....\n", data[0], data[1], data[2], data[3], data[4]);
+        printf("%02x %02x %02x %02x %02x....\n\n", data[0], data[1], data[2], data[3], data[4]);
     }
 }
 
