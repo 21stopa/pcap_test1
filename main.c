@@ -43,6 +43,7 @@ TCP_HEADER tcp_Container;
 u_char* data;
 void show_data(const struct pcap_pkthdr *header, const u_char *packet)
 {
+    char ipaddr_string[20];
     int size_ipheader = 0;
     int size_tcpheader = 0;
     ether_Container = *(ETHER_HEADER*)packet;
@@ -63,8 +64,8 @@ void show_data(const struct pcap_pkthdr *header, const u_char *packet)
     printf("eth.dmac: %02x:%02x:%02x:%02x:%02x:%02x\n",
            ether_Container.dst_mac[0],ether_Container.dst_mac[1],ether_Container.dst_mac[2],ether_Container.dst_mac[3],ether_Container.dst_mac[4],ether_Container.dst_mac[5]);
 
-    printf("ip.sip: %s\n", inet_ntoa(ip_Container.src_ip));
-    printf("ip.dip: %s\n", inet_ntoa(ip_Container.dst_ip));
+    printf("ip.sip: %s\n", inet_ntop(AF_INET, (void*)&ip_Container.src_ip,ipaddr_string,sizeof(ipaddr_string)));
+    printf("ip.dip: %s\n", inet_ntop(AF_INET, (void*)&ip_Container.dst_ip,ipaddr_string,sizeof(ipaddr_string)));
 
     printf("tcp.sport: %hu\n", ntohs(tcp_Container.src_port));
     printf("tcp.dport: %hu\n", ntohs(tcp_Container.dst_port));
