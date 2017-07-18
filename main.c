@@ -71,8 +71,8 @@ void show_data(const struct pcap_pkthdr *header, const u_char *packet)
     printf("Length of IP HEADER: %d, Length of TCP Header: %d\n",size_ipheader,size_tcpheader);
 
     data = (u_char*)(packet+SIZE_ETHER_HEADER+size_ipheader+size_tcpheader);
-    printf("header->len: %d\n",header->len);
-    if((SIZE_ETHER_HEADER + size_ipheader + size_tcpheader)==header->len)
+    printf("header->len: %d\n",ntohs(ip_Container.total_Length));
+    if((ntohs(ip_Container.total_Length) - size_ipheader - size_tcpheader)==0)
         printf("NO PAYLOAD\n\n");
     else
     {
